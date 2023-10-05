@@ -1,3 +1,5 @@
+import time
+
 from torch.optim.lr_scheduler import StepLR
 import torch
 import cv2
@@ -12,7 +14,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-
+start=time.time()
 
 # class OneClassDataset(torch.utils.data.Dataset):
 #     def __init__(self, data_dir, transform=None):
@@ -38,54 +40,36 @@ class CustomDataset(Dataset):
         self.data_dir = data_dir
         self.transform = transform
         self.image_files = os.listdir(data_dir)
-        # self.image_paths = []  # List of image file paths
 
-    #     # Populate image_paths with the paths to your dataset images
-    #
-    # def __len__(self):
-    #     return len(self.image_paths)
 
     def __len__(self):
         return len(self.image_files)
 
     def __getitem__(self, idx):
         img_name = os.path.join(self.data_dir, self.image_files[idx])
-        # image = Image.open(img_name)
 
         image = cv2.imread(img_name, cv2.IMREAD_GRAYSCALE)  # Read image in grayscale
-        # image = cv2.imread(img_name)
-
-        # Apply thresholding using cv2.threshold
-        # _, image = cv2.threshold(image, 137, 255, cv2.THRESH_BINARY)
-        # image = torch.from_numpy(thresholded_image)
 
         if self.transform:
-            # image = self.transform(thresholded_image)
+
             image = self.transform(Image.fromarray(image))
 
         return image
 
-    # def __getitem__(self, idx):
-    #     # img_path = self.image_paths[idx]
-    #     image = cv2.imread(data_dir, cv2.IMREAD_GRAYSCALE)  # Read image in grayscale
-    #
-    #     # Apply thresholding using cv2.threshold
-    #     _, thresholded_image = cv2.threshold(image, 136, 255, cv2.THRESH_BINARY)
-    #
-    #     if self.transform:
-    #         thresholded_image = self.transform(thresholded_image)
-    #
-    #     return thresholded_image
 
 
-transform = transforms.Compose([
-    transforms.Resize((224, 320)),
-    transforms.Grayscale(num_output_channels=3),
-    # transforms.RandomHorizontalFlip(),
-    # transforms.RandomRotation(10),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-])
+# transform = transforms.Compose([
+#     transforms.Resize((224, 320)),
+#     transforms.Grayscale(num_output_channels=3),
+#     # transforms.RandomHorizontalFlip(),
+#     # transforms.RandomRotation(10),
+#     transforms.ToTensor(),
+#     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+# ])
+
+transform = transforms.Compose([transforms.Resize((224, 320)),
+                                        transforms.Grayscale(num_output_channels=3), transforms.ToTensor(),
+                                        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
 
 # img_path = ("C:/Workarea/File_Analyser/etc/not_melli/download.jpg")
 # image = Image.open("C:/Workarea/File_Analyser/etc/not_melli/download.jpg")
@@ -109,9 +93,9 @@ transform = transforms.Compose([
 # plt.show()
 
 
-data_dir = 'C:/works/File_Analyser/dataset/melli'
-dataset = CustomDataset(data_dir, transform=transform)
-dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
+# data_dir = 'C:/works/File_Analyser/dataset/melli'
+# dataset = CustomDataset(data_dir, transform=transform)
+# dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
 
 model = models.resnet18(weights='ResNet18_Weights.DEFAULT')
 num_features = model.fc.in_features
@@ -119,28 +103,28 @@ model.fc = nn.Linear(num_features, 1)
 model = model.to(device)
 # model.load_state_dict(torch.load("C:/works/File_Analyser/Models/model11.pth", map_location='cpu'))
 
-
-criterion = nn.BCEWithLogitsLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.0001)
-
-num_epochs = 33
-for epoch in range(num_epochs):
-    for inputs in dataloader:
-        inputs = inputs.to(device)
-        model.train()
-        optimizer.zero_grad()
-        outputs = model(inputs)
-        loss = criterion(outputs, torch.ones_like(outputs))  # Target label is 1 (positive)
-        loss.backward()
-        optimizer.step()
-
-    print(f'Epoch [{epoch + 1}/{num_epochs}] Loss: {loss.item():.4f}')
-
-torch.save(obj=model.state_dict(), f="C:/works/File_Analyser/Models/model12.pth")
-
+#
+# criterion = nn.BCEWithLogitsLoss()
+# optimizer = optim.Adam(model.parameters(), lr=0.0001)
+#
+# num_epochs = 33
+# for epoch in range(num_epochs):
+#     for inputs in dataloader:
+#         inputs = inputs.to(device)
+#         model.train()
+#         optimizer.zero_grad()
+#         outputs = model(inputs)
+#         loss = criterion(outputs, torch.ones_like(outputs))  # Target label is 1 (positive)
+#         loss.backward()
+#         optimizer.step()
+#
+#     print(f'Epoch [{epoch + 1}/{num_epochs}] Loss: {loss.item():.4f}')
+#
+# torch.save(obj=model.state_dict(), f="C:/works/File_Analyser/Models/model12.pth")
+#
 
 #
-# model.load_state_dict(torch.load("C:/works/File_Analyser/Models/model10.pth", map_location=device))
+model.load_state_dict(torch.load("C:/Workarea/File_Analyser/main/models/model11.pth", map_location=device))
 # def predict_image(image_path):
 #     image = Image.open(image_path)
 #     image = transform(image).unsqueeze(0)
@@ -154,22 +138,31 @@ torch.save(obj=model.state_dict(), f="C:/works/File_Analyser/Models/model12.pth"
 #     return prob.item()
 
 
+# def predict_image(image_path):
+#     image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+#     image = transform(Image.fromarray(image)).unsqueeze(0)
+#     # _, image = cv2.threshold(image, 138, 255, cv2.THRESH_BINARY)
+#     # image = transform(image).unsqueeze(0)
+#     image = image.to(device)
+#
+#     with torch.no_grad():
+#         output = model(image)
+#
+#     prob = torch.sigmoid(output)
+#
+#     return prob.item()
+
 def predict_image(image_path):
     image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-    # _, image = cv2.threshold(image, 138, 255, cv2.THRESH_BINARY)
     image = transform(Image.fromarray(image)).unsqueeze(0)
-    # image = transform(image).unsqueeze(0)
     image = image.to(device)
-
     with torch.no_grad():
         output = model(image)
-
     prob = torch.sigmoid(output)
-
     return prob.item()
 
 
-new_image_path = 'C:/works/pytorch/pytorch_learning/File_Analyser/etc/not_melli/img_706.jpg'
+new_image_path = 'C:/works/pytorch/pytorch_learning/File_Analyser/etc/not_melli/1234.jpg'
 prediction = predict_image(new_image_path)
 print(prediction)
 
@@ -177,3 +170,6 @@ if prediction > 0.94:
     print("The image belongs to the class.")
 else:
     print("The image does not belong to the class.")
+
+end=time.time()
+print(f"timing {end-start}")
