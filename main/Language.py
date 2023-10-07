@@ -1,13 +1,21 @@
-from translate import Translator
+import googletrans
+
+translator = googletrans.Translator()
 
 
-def translate_text(input_text, lang: str):
+def translation(input_text, src, dest):
     try:
-        translator = Translator(to_lang=lang)
-        translated = translator.translate(input_text)
+        translated = translator.translate(input_text, src=src, dest=dest)
         return translated
     except Exception as e:
-        if str(e) == "generator raised StopIteration":
-            return "input word is not a correct word"
-        else:
-            return e
+        return e
+
+# translation("آدم",src="ruccc",dest="en")
+#
+# x=translation("آدم",src="ruccc",dest="en")
+# # print(f"{translation.origin} ({translation.src}) --> {translation.text} ({translation.dest})")
+# print(x.text)
+
+
+# translation = translator.translate("آدم",  dest="en")
+# print(translation.text)

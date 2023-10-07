@@ -1,6 +1,4 @@
 import base64
-import imghdr
-
 from pyzbar.pyzbar import decode
 import numpy as np
 import torch
@@ -14,9 +12,6 @@ def predicting(base64_string: str):
     def is_base64_image(base64_string=base64_string):
         try:
             image_bytes = base64.b64decode(base64_string)
-
-            # image_format = imghdr.what(None, image_bytes)
-
             image_array = np.frombuffer(image_bytes, np.uint8)
             image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
             if image is not None:
@@ -41,7 +36,7 @@ def predicting(base64_string: str):
                             return True
 
         def Detect_CreditCard():
-            pattern_img = cv2.imread('source.JPG')
+            pattern_img = cv2.imread('source.jpg')
             # second_img = cv2.imread(base64_string)
             result = cv2.matchTemplate(image, pattern_img, cv2.TM_CCOEFF_NORMED)
             threshold = 0.21
@@ -60,7 +55,8 @@ def predicting(base64_string: str):
                         return True
 
         def Detect_MelliCard():
-            device = "cuda" if torch.cuda.is_available() else "cpu"
+            # device = "cuda" if torch.cuda.is_available() else "cpu"
+            device ="cpu"
             transform = transforms.Compose([transforms.Resize((224, 320)),
                                             transforms.Grayscale(num_output_channels=3), transforms.ToTensor(),
                                             transforms.Normalize(mean=[0.485, 0.456, 0.406],
@@ -70,6 +66,13 @@ def predicting(base64_string: str):
             model.fc = nn.Linear(num_features, 1)
             model = model.to(device)
             model.load_state_dict(torch.load("model11.pth", map_location='cpu'))
+
+            melli_pattern=cv2.imread("melli_pattern.jpg")
+            cv2.matchTemplate(image,melli_pattern,cv2.TM_CCOEFF_NORMED)
+            threshold = 0.21
+            if len(locations[0]) > 0:
+                return True
+
 
 
             def predict_image(image):
