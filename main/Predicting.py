@@ -24,19 +24,40 @@ def predicting(base64_string: str):
     is_image, image = is_base64_image(base64_string)
 
     if is_image:
-        def Decode_QRCode():
+
+        def Detect_check():
             # image = cv2.imread(is_base64_image(base64_string).image)
-            for threshold_value in range(0, 256, 10):
-                gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                _, thresholded_image = cv2.threshold(gray_image, threshold_value, 255, cv2.THRESH_BINARY)
-                decoded_objects = decode(thresholded_image)
-                if len(decoded_objects) == 1:
-                    for obj in decoded_objects:
-                        if len(obj.data.decode('utf-8')) == 75:
-                            return True
+            def detect_feature():
+                pattern_img = cv2.imread('Check_pattern.JPG')
+                result = cv2.matchTemplate(image, pattern_img, cv2.TM_CCOEFF_NORMED)
+                threshold = 0.2005
+                locations = np.where(result >= threshold)
+                if len(locations[0]) > 0:
+                    return True
+
+            def detect_feature2():
+                pattern_img2 = cv2.imread('Check_pattern2.JPG')
+                result = cv2.matchTemplate(image, pattern_img2, cv2.TM_CCOEFF_NORMED)
+                threshold = 0.165
+                locations = np.where(result >= threshold)
+                if len(locations[0]) > 0:
+                    return True
+
+            def detect_QR():
+                for threshold_value in range(0, 256, 10):
+                    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                    _, thresholded_image = cv2.threshold(gray_image, threshold_value, 255, cv2.THRESH_BINARY)
+                    decoded_objects = decode(thresholded_image)
+                    if len(decoded_objects) == 1:
+                        for obj in decoded_objects:
+                            if len(obj.data.decode('utf-8')) == 75:
+                                return True
+
+            if (detect_QR() and detect_feature()) or (detect_QR() and detect_feature2()) or (detect_feature() and detect_feature2()):
+                return True
 
         def Detect_CreditCard():
-            pattern_img = cv2.imread('source.jpg')
+            pattern_img = cv2.imread('Credit_pattern.jpg')
             # second_img = cv2.imread(base64_string)
             result = cv2.matchTemplate(image, pattern_img, cv2.TM_CCOEFF_NORMED)
             threshold = 0.21
@@ -67,12 +88,13 @@ def predicting(base64_string: str):
             model = model.to(device)
             model.load_state_dict(torch.load("model11.pth", map_location='cpu'))
 
-            melli_pattern=cv2.imread("melli_pattern.jpg")
-            cv2.matchTemplate(image,melli_pattern,cv2.TM_CCOEFF_NORMED)
-            threshold = 0.21
-            if len(locations[0]) > 0:
-                return True
-
+            def detect_feature():
+                pattern_img = cv2.imread('Iran_pattern.JPG')
+                result = cv2.matchTemplate(image, pattern_img, cv2.TM_CCOEFF_NORMED)
+                threshold = 0.21
+                locations = np.where(result >= threshold)
+                if len(locations[0]) > 0:
+                    return True
 
 
             def predict_image(image):
@@ -86,10 +108,10 @@ def predicting(base64_string: str):
                 return prob.item()
 
             prediction = predict_image(image)
-            if prediction > 0.94:
+            if prediction > 0.94 and detect_feature():
                 return True
 
-        if Decode_QRCode():
+        if Detect_check():
             return 1
         elif Detect_CreditCard():
             return 2
