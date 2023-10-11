@@ -22,18 +22,19 @@ def predicting(base64_string: str):
             return False, None
 
     is_image, image = is_base64_image(base64_string)
-
+    count=0
     if is_image:
 
         def Detect_check():
+
             # image = cv2.imread(is_base64_image(base64_string).image)
             def detect_feature():
                 pattern_img = cv2.imread('Check_pattern.JPG')
                 result = cv2.matchTemplate(image, pattern_img, cv2.TM_CCOEFF_NORMED)
                 threshold = 0.2005
-                locations = np.where(result >= threshold)
+                locations = np.where(result  >=threshold)
                 if len(locations[0]) > 0:
-                    return True
+                    count=count+1
 
             def detect_feature2():
                 pattern_img2 = cv2.imread('Check_pattern2.JPG')
@@ -41,7 +42,7 @@ def predicting(base64_string: str):
                 threshold = 0.165
                 locations = np.where(result >= threshold)
                 if len(locations[0]) > 0:
-                    return True
+                    count=count+1
 
             def detect_QR():
                 for threshold_value in range(0, 256, 10):
@@ -51,9 +52,13 @@ def predicting(base64_string: str):
                     if len(decoded_objects) == 1:
                         for obj in decoded_objects:
                             if len(obj.data.decode('utf-8')) == 75:
-                                return True
+                                count=count+1
 
-            if (detect_QR() and detect_feature()) or (detect_QR() and detect_feature2()) or (detect_feature() and detect_feature2()):
+            # if (detect_QR() and detect_feature()) or (detect_QR() and detect_feature2()) or (detect_feature() and detect_feature2()):
+            detect_feature()
+            detect_feature2()
+            detect_QR()
+            if count==2:
                 return True
 
         def Detect_CreditCard():

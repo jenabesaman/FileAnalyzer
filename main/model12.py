@@ -93,9 +93,9 @@ transform = transforms.Compose([transforms.Resize((224, 320)),
 # plt.show()
 
 
-# data_dir = 'C:/works/File_Analyser/dataset/melli'
-# dataset = CustomDataset(data_dir, transform=transform)
-# dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
+data_dir = 'C:/works/File_Analyser/dataset/melli'
+dataset = CustomDataset(data_dir, transform=transform)
+dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
 
 model = models.resnet18(weights='ResNet18_Weights.DEFAULT')
 num_features = model.fc.in_features
@@ -104,23 +104,23 @@ model = model.to(device)
 # model.load_state_dict(torch.load("C:/works/File_Analyser/Models/model11.pth", map_location='cpu'))
 
 #
-# criterion = nn.BCEWithLogitsLoss()
-# optimizer = optim.Adam(model.parameters(), lr=0.0001)
-#
-# num_epochs = 33
-# for epoch in range(num_epochs):
-#     for inputs in dataloader:
-#         inputs = inputs.to(device)
-#         model.train()
-#         optimizer.zero_grad()
-#         outputs = model(inputs)
-#         loss = criterion(outputs, torch.ones_like(outputs))  # Target label is 1 (positive)
-#         loss.backward()
-#         optimizer.step()
-#
-#     print(f'Epoch [{epoch + 1}/{num_epochs}] Loss: {loss.item():.4f}')
-#
-# torch.save(obj=model.state_dict(), f="C:/works/File_Analyser/Models/model12.pth")
+criterion = nn.BCEWithLogitsLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.0001)
+
+num_epochs = 33
+for epoch in range(num_epochs):
+    for inputs in dataloader:
+        inputs = inputs.to(device)
+        model.train()
+        optimizer.zero_grad()
+        outputs = model(inputs)
+        loss = criterion(outputs, torch.ones_like(outputs))  # Target label is 1 (positive)
+        loss.backward()
+        optimizer.step()
+
+    print(f'Epoch [{epoch + 1}/{num_epochs}] Loss: {loss.item():.4f}')
+
+torch.save(obj=model.state_dict(), f="C:/works/File_Analyser/Models/model12.pth")
 #
 
 #

@@ -10,32 +10,32 @@ import time
 image = cv2.imread('C:/Workarea/File_Analyser/check/images (9).jpg')
 
 # Resize the image to a consistent size
-# image = cv2.resize(image, (400, 250))
+image = cv2.resize(image, (400, 250))
 #
 # # Convert the image to grayscale
-# gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 #
 # # Apply Gaussian blur for noise reduction
-# blurred_image1 = cv2.GaussianBlur(image, (5, 5), 0)
-# blurred_image2 = cv2.blur(image, (3,2),cv2.BORDER_DEFAULT)
-# blurred_image3=cv2.bilateralFilter(image,9,10,10)
-# blurred_image = cv2.GaussianBlur(gray_image, (5, 5), 0)
-#
-# # cv2.imshow('Edges', blurred_image)
-# # cv2.waitKey(0)
-# # cv2.destroyAllWindows()
-#
-# # Perform edge detection
-# edges1 = cv2.Canny(blurred_image1, 50, 150)
-# edges2 = cv2.Canny(blurred_image2, 50, 150)
-# edges3 = cv2.Canny(blurred_image3, 50, 150)
-#
-# cv2.imshow('Edges', edges1)
-# cv2.imshow('Edges2', edges2)
-# cv2.imshow('Edges3', edges3)
-#
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+blurred_image1 = cv2.GaussianBlur(image, (5, 5), 0)
+blurred_image2 = cv2.blur(image, (3,2),cv2.BORDER_DEFAULT)
+blurred_image3=cv2.bilateralFilter(image,9,10,10)
+blurred_image = cv2.GaussianBlur(gray_image, (5, 5), 0)
+
+cv2.imshow('Edges', blurred_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+# Perform edge detection
+edges1 = cv2.Canny(blurred_image1, 50, 150)
+edges2 = cv2.Canny(blurred_image2, 50, 150)
+edges3 = cv2.Canny(blurred_image3, 50, 150)
+
+cv2.imshow('Edges', edges1)
+cv2.imshow('Edges2', edges2)
+cv2.imshow('Edges3', edges3)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 
 
 
