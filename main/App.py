@@ -1,7 +1,11 @@
 import os
 from flask import Flask, request, jsonify, Response
 import Predicting
-import Language
+# import Language
+import sys
+sys.path.append('./Summarizing')
+from  Summarizing import main
+from  Summarizing import ConvertSTRToTXT
 
 app = Flask(__name__)
 app.debug = True
@@ -40,20 +44,34 @@ def predicting():
         return "cant predict"
 
 
-@app.route("/translate", methods=["post"])
-def translating():
+# @app.route("/translate", methods=["post"])
+# def translating():
+#     try:
+#         os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+#         data = request.get_json(force=True)
+#         src = str(request.args.get('src'))
+#         dest = str(request.args.get('dest'))
+#         my_dict = {}
+#         for key, value in data.items():
+#             translated = Language.translation(input_text=value, src=src, dest=dest)
+#             my_dict[key] = translated.text
+#         return my_dict
+#     except:
+#         return "cant translate"
+
+@app.route("/summarize", methods=["post"])
+def summarizing():
     try:
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
         data = request.get_json(force=True)
-        src = str(request.args.get('src'))
-        dest = str(request.args.get('dest'))
-        my_dict = {}
-        for key, value in data.items():
-            translated = Language.translation(input_text=value, src=src, dest=dest)
-            my_dict[key] = translated.text
-        return my_dict
+        text = data["text"]
+        ConvertSTRToTXT.converting(input(text))
+        summarize = main.summarize(filename="./Summarizing/text.txt")
+        # result = obj.handeling()
+        return jsonify({'result': summarize})
     except:
-        return "cant translate"
+        return "cant predict"
+
 
 
 if __name__ == "__main__":
