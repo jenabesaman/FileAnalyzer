@@ -3,9 +3,10 @@ from flask import Flask, request, jsonify, Response
 import Predicting
 # import Language
 import sys
-sys.path.append('./Summarizing')
-from  Summarizing import main
-from  Summarizing import ConvertSTRToTXT
+
+sys.path.append('./Summarize')
+from Summarize import main
+from Summarize import ConvertSTRToTXT
 
 app = Flask(__name__)
 app.debug = True
@@ -64,14 +65,17 @@ def summarizing():
     try:
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
         data = request.get_json(force=True)
+        print(data)
         text = data["text"]
-        ConvertSTRToTXT.converting(input(text))
-        summarize = main.summarize(filename="./Summarizing/text.txt")
+        text2='"'+'"'+'"'+text+'"'+'"'+'"'
+        print(text2)
+        ConvertSTRToTXT.converting(text2)
+        summarize = main.summarize(filename="Summarize/text.txt")
         # result = obj.handeling()
+        # return jsonify({'result': summarize})
         return jsonify({'result': summarize})
     except:
         return "cant predict"
-
 
 
 if __name__ == "__main__":

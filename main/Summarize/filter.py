@@ -18,9 +18,14 @@ from sys import argv
 #         filter.py <article.txt>
 #     ''')
 
-
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+summarize_path="word_lists"
+file_path="transition_phrases.txt"
+output_path = os.path.join(script_dir, summarize_path, file_path)
 def get_transition_phrases():
-    lines = open("word_lists/transition_phrases.txt").readlines()
+    lines = open(output_path).readlines()
+    # lines = open("word_lists/transition_phrases.txt").readlines()
     result = []
     for line in lines:
         result.append(line.lstrip().rstrip())

@@ -4,10 +4,17 @@ import parser
 import extractor
 from sys import argv
 
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+summarize_path="word_lists"
+file_path="words_to_ignore.txt"
+output_path = os.path.join(script_dir, summarize_path, file_path)
+# print(output_path)
 
 def get_word_scores(all_words):
     # Return a dictionary where the key is the word and the value is its count.
-    file = open("word_lists/words_to_ignore.txt")
+    file = open(output_path)
+    # file = open("word_lists/words_to_ignore.txt")
     words_to_ignore = file.read().split("\n")
     file.close()
     dictionary = {}

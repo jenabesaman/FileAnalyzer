@@ -1,5 +1,7 @@
 # The highest level code that brings everything together.
+import sys
 
+sys.path.append('./Summarize')
 import extractor
 import filter
 import scoring
@@ -33,7 +35,7 @@ def summarize(filename, num_of_sentences=8):
     #     print("The summary cannot be longer than the text.")
     #     return
     if num_of_sentences > len(all_sentences):
-        num_of_sentences = all_sentences
+        num_of_sentences = len(all_sentences)
 
     # Get x sentences with the highest scores, in chronological order.
     threshold = scoring.x_highest_score(sentence_scores, num_of_sentences)

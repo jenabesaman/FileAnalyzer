@@ -1,5 +1,7 @@
 # Tool to extract sentences & words from a file.
+import sys
 
+sys.path.append('./Summarize')
 from sys import argv
 import parser
 

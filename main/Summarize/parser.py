@@ -1,7 +1,9 @@
 # Tool to trim and manipulate words and sentences.
+import sys
 
+sys.path.append('./Summarize')
 from sys import argv
-
+from Summarize import word_lists
 
 def comma_handler(sentences):
     # If a sentence starts with a comma it is probably part of the sentence before it.
@@ -76,11 +78,17 @@ def remove_blanks(sentences):
             new_list.append(sentence)
     return new_list
 
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+summarize_path="word_lists"
+file_path="abbreviations.txt"
+output_path = os.path.join(script_dir, summarize_path, file_path)
 
 def fix_broken_sentences(sentences):
     # Combine sentences in a list where periods from abbreviations where
     # mistaken for the end of a sentence.
-    file = open("word_lists/abbreviations.txt")
+    # file = open("word_lists/abbreviations.txt")
+    file = open(output_path)
     abbreviations = str(file.read()).split("\n")
     file.close()
 
@@ -105,10 +113,15 @@ def fix_broken_sentences(sentences):
                 break
     return new_list
 
-
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+summarize_path="word_lists"
+file_path="abbreviations_multi.txt"
+output_path = os.path.join(script_dir, summarize_path, file_path)
 def convert_abbreviations(string):
     # Remove all periods in all multi period abbreviations. Example: Y.M.C.A -> YMCA
-    file = open("word_lists/abbreviations_multi.txt")
+    file = open(output_path)
+    # file = open("./word_lists/abbreviations_multi.txt")
     abbreviations = str(file.read()).split("\n")
     file.close()
     new_string = string
