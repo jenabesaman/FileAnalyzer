@@ -1,0 +1,5 @@
+let str = `
+There were ...`;
+
+str = str.replace(/\n/g, '\\n'); 
+console.log(str)

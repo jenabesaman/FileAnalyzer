@@ -65,17 +65,17 @@ def summarizing():
     try:
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
         data = request.get_json(force=True)
-        print(data)
+        # print(data)
         text = data["text"]
-        text2='"'+'"'+'"'+text+'"'+'"'+'"'
-        print(text2)
-        ConvertSTRToTXT.converting(text2)
-        summarize = main.summarize(filename="Summarize/text.txt")
+        # text2='"'+'"'+'"'+text+'"'+'"'+'"'
+        # print(text)
+        ConvertSTRToTXT.converting(text)
+        summarize = main.summarize(filename="Summarize/text.txt",num_of_sentences=1)
         # result = obj.handeling()
         # return jsonify({'result': summarize})
         return jsonify({'result': summarize})
     except:
-        return "cant predict"
+        return "cant summarize"
 
 
 if __name__ == "__main__":
